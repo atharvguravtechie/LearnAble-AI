@@ -1,0 +1,142 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quizzes | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quizzes.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="quiz-page">
+
+    <div class="quiz-heading">
+        <div>
+            <span class="quiz-tag">TEST YOUR KNOWLEDGE</span>
+            <h1>Practice Quizzes</h1>
+            <p>Challenge yourself and track how much you have learned.</p>
+        </div>
+        <div class="quiz-heading-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
+    </div>
+
+    <div class="quiz-selection-layout">
+
+        <div class="quiz-form-card">
+            <div class="quiz-card-heading">
+                <div class="quiz-icon">
+                    <i class="bi bi-patch-question"></i>
+                </div>
+                <div>
+                    <h3>Create a Quiz</h3>
+                    <p>Choose what you want to practise.</p>
+                </div>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label for="subject">Select Subject</label>
+                <select name="subject" id="subject" class="form-select">
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}"
+                            {% if selected_subject == subject %}selected{% endif %}>
+                            {{ subject }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="topic">Topic (for topic quiz)</label>
+                <input
+                    type="text"
+                    name="topic"
+                    id="topic"
+                    class="form-control"
+                    placeholder="Example: Newton's Laws of Motion"
+                    value="{{ selected_topic|default:'' }}"
+                >
+
+                <label class="quiz-type-label">Choose Quiz Type</label>
+
+                <div class="quiz-type-options">
+
+                    <label class="quiz-type-option">
+                        <input
+                            type="radio"
+                            name="quiz_type"
+                            value="topic"
+                            {% if selected_quiz_type != 'subject' %}checked{% endif %}
+                        >
+                        <span class="quiz-type-content">
+                            <i class="bi bi-book"></i>
+                            <strong>Topic Quiz</strong>
+                            <small>30 Questions</small>
+                        </span>
+                    </label>
+
+                    <label class="quiz-type-option">
+                        <input
+                            type="radio"
+                            name="quiz_type"
+                            value="subject"
+                            {% if selected_quiz_type == 'subject' %}checked{% endif %}
+                        >
+                        <span class="quiz-type-content">
+                            <i class="bi bi-journal-text"></i>
+                            <strong>Subject Quiz</strong>
+                            <small>60 Questions</small>
+                        </span>
+                    </label>
+
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-warning mt-3">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="start-quiz-button">
+                    <i class="bi bi-play-circle"></i>
+                    Start Quiz
+                </button>
+            </form>
+        </div>
+
+        <div class="quiz-info-card">
+            <div class="quiz-info-icon">
+                <i class="bi bi-lightbulb"></i>
+            </div>
+
+            <h3>Learn by practising</h3>
+            <p>Regular practice helps you understand concepts and prepare for exams.</p>
+
+            <div class="quiz-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Four options for each question</span>
+            </div>
+
+            <div class="quiz-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Automatic score calculation</span>
+            </div>
+
+            <div class="quiz-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Instant result and percentage</span>
+            </div>
+
+            <div class="quiz-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Correct answer review</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

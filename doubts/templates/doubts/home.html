@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ask a Doubt | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/doubts.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="doubts-page">
+
+    <div class="doubts-heading">
+        <div>
+            <span class="doubts-tag">AI LEARNING ASSISTANT</span>
+            <h1>Ask Your Doubt</h1>
+            <p>Every question matters. Let's understand it together.</p>
+        </div>
+
+        <div class="doubt-heading-icon">
+            <i class="bi bi-lightbulb"></i>
+        </div>
+    </div>
+
+    <div class="doubt-layout">
+
+        <div class="doubt-form-card">
+            <div class="card-heading">
+                <div class="card-icon">
+                    <i class="bi bi-chat-square-text"></i>
+                </div>
+                <div>
+                    <h3>What would you like to know?</h3>
+                    <p>Enter your question below.</p>
+                </div>
+            </div>
+
+            <form method="POST" id="doubtForm">
+                {% csrf_token %}
+
+                <label for="subject">Select Subject</label>
+
+                <select name="subject" id="subject" class="form-select">
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}"
+                            {% if selected_subject == subject %}selected{% endif %}>
+                            {{ subject }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="question" class="question-label">
+                    Your Question
+                </label>
+
+                <textarea
+                    name="question"
+                    id="question"
+                    class="form-control doubt-textarea"
+                    placeholder="Type your doubt here... For example: Explain Newton's laws of motion."
+                    required
+                >{{ question }}</textarea>
+
+                <div class="textarea-footer">
+                    <span><i class="bi bi-info-circle"></i> Be as specific as possible.</span>
+                    <span id="characterCount">0 characters</span>
+                </div>
+
+                <div class="doubt-actions">
+                    <button type="button" class="clear-button" id="clearButton">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Clear
+                    </button>
+
+                    <button type="submit" class="ask-button">
+                        <i class="bi bi-send"></i>
+                        Ask AI Teacher
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="doubt-tips-card">
+            <div class="tips-icon">
+                <i class="bi bi-stars"></i>
+            </div>
+
+            <h3>Tips for better answers</h3>
+            <p>Follow these tips to get more useful explanations.</p>
+
+            <div class="tip-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Ask one question at a time.</span>
+            </div>
+
+            <div class="tip-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Mention the topic or chapter.</span>
+            </div>
+
+            <div class="tip-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Include the full problem if possible.</span>
+            </div>
+
+            <div class="tip-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Ask for a step-by-step explanation.</span>
+            </div>
+
+            <div class="tips-bottom">
+                <i class="bi bi-lightbulb-fill"></i>
+                <span>There are no silly questions. Keep learning!</span>
+            </div>
+        </div>
+
+    </div>
+
+    {% if answer %}
+    <div class="answer-card">
+        <div class="answer-heading">
+            <div class="answer-icon">
+                <i class="bi bi-robot"></i>
+            </div>
+            <div>
+                <h3>AI Teacher's Response</h3>
+                <p>{{ selected_subject }} · Demo mode</p>
+            </div>
+        </div>
+
+        <div class="submitted-question">
+            <strong>Your question:</strong>
+            <p>{{ question }}</p>
+        </div>
+
+        <div class="answer-content">
+            <strong><i class="bi bi-stars"></i> Explanation</strong>
+            <p>{{ answer }}</p>
+        </div>
+
+        <button type="button" class="ask-another-button" id="askAnotherButton">
+            <i class="bi bi-plus-circle"></i>
+            Ask Another Question
+        </button>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/doubts.js' %}"></script>
+{% endblock %}

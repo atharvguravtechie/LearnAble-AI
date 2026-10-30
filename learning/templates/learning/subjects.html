@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Learning | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/learning.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="learning-container">
+
+    <div class="learning-heading">
+        <div>
+            <span class="learning-eyebrow">YOUR STUDY SPACE</span>
+            <h1>My Learning</h1>
+            <p>Explore your subjects and continue your learning journey.</p>
+        </div>
+
+        <div class="learning-heading-icon">
+            <i class="bi bi-journal-bookmark-fill"></i>
+        </div>
+    </div>
+
+    <div class="learning-summary">
+        <div>
+            <i class="bi bi-book-half"></i>
+            <div>
+                <strong>{{ subjects|length }}</strong>
+                <span>Available Subjects</span>
+            </div>
+        </div>
+
+        <div>
+            <i class="bi bi-lightbulb"></i>
+            <div>
+                <strong>Learn at your pace</strong>
+                <span>Explore topics and lessons</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="learning-section-title">
+        <div>
+            <h2>Your Subjects</h2>
+            <p>Select a subject to view its topics.</p>
+        </div>
+    </div>
+
+    {% if subjects %}
+
+        <div class="subject-grid">
+
+            {% for subject in subjects %}
+
+                <a href="{% url 'learning:topics' subject.id %}"
+                   class="subject-card">
+
+                    <div class="subject-card-top">
+
+                        <div class="subject-icon">
+                            {% if subject.image %}
+                                <img src="{{ subject.image.url }}"
+                                     alt="{{ subject.name }}">
+                            {% else %}
+                                <i class="bi bi-book-half"></i>
+                            {% endif %}
+                        </div>
+
+                        <span class="subject-arrow">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </span>
+
+                    </div>
+
+                    <h3>{{ subject.name }}</h3>
+
+                    <p>
+                        {{ subject.description|default:"Explore topics and lessons in this subject."|truncatewords:20 }}
+                    </p>
+
+                    <div class="subject-card-footer">
+                        <span>
+                            <i class="bi bi-collection"></i>
+                            {{ subject.topics.count }} Topics
+                        </span>
+
+                        <span class="subject-open">
+                            View Topics
+                            <i class="bi bi-arrow-right"></i>
+                        </span>
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="learning-empty-state">
+
+            <div class="learning-empty-icon">
+                <i class="bi bi-journal-plus"></i>
+            </div>
+
+            <h3>No subjects added yet</h3>
+
+            <p>
+                Your subjects will appear here once they are added.
+                You can add your first subject through the Django Admin panel.
+            </p>
+
+            <a href="/admin/" class="learning-admin-button">
+                <i class="bi bi-plus-circle"></i>
+                Open Admin Panel
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

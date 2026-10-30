@@ -1,0 +1,92 @@
+
+
+```html
+{% load static %}
+
+<nav class="top-navbar">
+
+    <div class="navbar-left">
+
+        <button
+            class="sidebar-toggle"
+            id="sidebarToggle"
+            type="button"
+            aria-label="Open navigation menu"
+        >
+            <i class="bi bi-list"></i>
+        </button>
+
+        <span class="navbar-page-title">Student Dashboard</span>
+
+    </div>
+
+    <div class="navbar-right">
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'user_settings:home' %}"
+               class="navbar-user navbar-user-link"
+               title="Open Account Settings">
+
+                <div class="user-avatar">
+
+                    {% if user.profile.profile_photo %}
+
+                        <img
+                            src="{{ user.profile.profile_photo.url }}"
+                            alt="Profile Photo"
+                            class="navbar-profile-image"
+                        >
+
+                    {% else %}
+
+                        <i class="bi bi-person-fill"></i>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="user-details">
+
+                    <strong>
+                        {{ user.first_name|default:user.username }}
+                    </strong>
+
+                    <small>Student Account</small>
+
+                </div>
+
+            </a>
+
+            <a href="/accounts/logout/" class="logout-link">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </a>
+
+        {% else %}
+
+            <div class="navbar-user">
+
+                <div class="user-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div class="user-details">
+                    <strong>Student</strong>
+                    <small>Guest Account</small>
+                </div>
+
+            </div>
+
+            <a href="/accounts/login/" class="logout-link">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Login
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+```
+

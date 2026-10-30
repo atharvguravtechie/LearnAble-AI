@@ -1,0 +1,319 @@
+.doubts-page {
+    padding: 10px 5px 35px;
+}
+
+.doubts-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.doubts-tag {
+    color: #6c63ff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.doubts-heading h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: #20233a;
+    margin: 8px 0;
+}
+
+.doubts-heading p {
+    color: #85889a;
+    margin: 0;
+}
+
+.doubt-heading-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 20px;
+    background: #eeecff;
+    color: #6c63ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.doubt-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 22px;
+    align-items: stretch;
+}
+
+.doubt-form-card,
+.doubt-tips-card,
+.answer-card {
+    background: #fff;
+    border: 1px solid #ededf4;
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 5px 20px rgba(30, 35, 70, 0.04);
+}
+
+.card-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.card-icon,
+.answer-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+    background: #eeecff;
+    color: #6c63ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+}
+
+.card-heading h3,
+.answer-heading h3 {
+    font-size: 17px;
+    font-weight: 750;
+    color: #252841;
+    margin: 0 0 5px;
+}
+
+.card-heading p,
+.answer-heading p {
+    font-size: 13px;
+    color: #9294a3;
+    margin: 0;
+}
+
+.doubt-form-card label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #34364d;
+    margin-bottom: 9px;
+}
+
+.doubt-form-card .form-select {
+    min-height: 46px;
+    border-radius: 10px;
+    border-color: #e7e7ef;
+    margin-bottom: 22px;
+    font-size: 14px;
+}
+
+.doubt-form-card .form-select:focus,
+.doubt-textarea:focus {
+    border-color: #8179ff;
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.10);
+}
+
+.question-label {
+    margin-top: 2px;
+}
+
+.doubt-textarea {
+    min-height: 155px;
+    resize: vertical;
+    border-radius: 10px;
+    border-color: #e7e7ef;
+    padding: 14px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.textarea-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #999baa;
+    font-size: 11px;
+    margin-top: 9px;
+}
+
+.doubt-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 23px;
+}
+
+.clear-button,
+.ask-button,
+.ask-another-button {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 17px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.clear-button {
+    background: #f3f3f8;
+    color: #62647a;
+}
+
+.ask-button,
+.ask-another-button {
+    background: #6c63ff;
+    color: #fff;
+}
+
+.ask-button:hover,
+.ask-another-button:hover {
+    background: #554be8;
+}
+
+.clear-button:hover {
+    background: #e8e8f0;
+}
+
+.doubt-tips-card {
+    background: linear-gradient(145deg, #f4f2ff, #fff);
+}
+
+.tips-icon {
+    width: 48px;
+    height: 48px;
+    background: #e6e2ff;
+    color: #6c63ff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    margin-bottom: 18px;
+}
+
+.doubt-tips-card h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #292b45;
+}
+
+.doubt-tips-card > p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #85879b;
+    margin-bottom: 23px;
+}
+
+.tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #51536b;
+}
+
+.tip-item i {
+    color: #6c63ff;
+    font-size: 16px;
+}
+
+.tips-bottom {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 13px;
+    margin-top: 25px;
+    color: #69618f;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.tips-bottom i {
+    color: #f0a82d;
+    font-size: 17px;
+}
+
+.answer-card {
+    margin-top: 25px;
+}
+
+.answer-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 22px;
+}
+
+.submitted-question {
+    background: #f6f5ff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.submitted-question strong,
+.answer-content strong {
+    font-size: 13px;
+    color: #45465e;
+}
+
+.submitted-question p,
+.answer-content p {
+    color: #65677c;
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 8px 0 0;
+    white-space: pre-wrap;
+}
+
+.answer-content {
+    padding: 5px 3px 18px;
+}
+
+.answer-content strong i {
+    color: #6c63ff;
+}
+
+.ask-another-button {
+    margin-top: 10px;
+}
+
+@media (max-width: 850px) {
+    .doubt-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .doubts-heading h1 {
+        font-size: 24px;
+    }
+
+    .doubt-heading-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 23px;
+    }
+
+    .doubt-form-card,
+    .doubt-tips-card,
+    .answer-card {
+        padding: 19px;
+    }
+
+    .doubt-actions {
+        flex-direction: column-reverse;
+    }
+
+    .doubt-actions button {
+        width: 100%;
+    }
+
+    .textarea-footer {
+        flex-direction: column;
+    }
+}

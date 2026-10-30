@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ subject.name }} | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/learning.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="learning-container">
+
+    <a href="{% url 'learning:home' %}" class="learning-back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to My Learning
+    </a>
+
+    <div class="learning-heading">
+        <div>
+            <span class="learning-eyebrow">SUBJECT</span>
+            <h1>{{ subject.name }}</h1>
+            <p>
+                {{ subject.description|default:"Choose a topic to begin learning." }}
+            </p>
+        </div>
+
+        <div class="learning-heading-icon">
+            <i class="bi bi-book-half"></i>
+        </div>
+    </div>
+
+    <div class="learning-section-title">
+        <div>
+            <h2>Topics</h2>
+            <p>Choose a topic to explore its lessons.</p>
+        </div>
+
+        <span class="topic-count">
+            {{ topics|length }} Topics
+        </span>
+    </div>
+
+    {% if topics %}
+
+        <div class="topic-list">
+
+            {% for topic in topics %}
+
+                <div class="topic-card">
+
+                    <div class="topic-number">
+                        {{ forloop.counter|stringformat:"02d" }}
+                    </div>
+
+                    <div class="topic-information">
+                        <h3>{{ topic.title }}</h3>
+
+                        <p>
+                            {{ topic.description|default:"Start learning this topic."|truncatewords:22 }}
+                        </p>
+
+                        <span class="topic-lesson-count">
+                            <i class="bi bi-play-circle"></i>
+                            {{ topic.lessons.count }} Lessons
+                        </span>
+                    </div>
+
+                    <div class="topic-action">
+                        {% if topic.lessons.exists %}
+                            <a href="{% url 'learning:lesson_detail' topic.lessons.first.id %}">
+                                Start Learning
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        {% else %}
+                            <span class="topic-not-ready">Lessons coming soon</span>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="learning-empty-state">
+            <div class="learning-empty-icon">
+                <i class="bi bi-collection"></i>
+            </div>
+
+            <h3>No topics available</h3>
+
+            <p>
+                Topics for this subject will appear here when added by the administrator.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

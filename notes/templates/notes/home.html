@@ -1,0 +1,195 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Notes Generator | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/notes.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="notes-page">
+
+    <div class="notes-heading">
+        <div>
+            <span class="notes-tag">SMART STUDY ASSISTANT</span>
+            <h1>AI Notes Generator</h1>
+            <p>Turn your topics and syllabus into organised study notes.</p>
+        </div>
+
+        <div class="notes-heading-icon">
+            <i class="bi bi-journal-bookmark"></i>
+        </div>
+    </div>
+
+    <div class="notes-layout">
+
+        <div class="notes-form-card">
+            <div class="notes-card-heading">
+                <div class="notes-icon">
+                    <i class="bi bi-magic"></i>
+                </div>
+                <div>
+                    <h3>Create your study notes</h3>
+                    <p>Choose your preferences and enter a topic.</p>
+                </div>
+            </div>
+
+            <form method="POST" action="{% url 'notes:home' %}">
+                {% csrf_token %}
+
+                <label for="subject">Select Subject</label>
+                <select name="subject" id="subject" class="form-select">
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}"
+                            {% if selected_subject == subject %}selected{% endif %}>
+                            {{ subject }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="topic">Topic or Syllabus</label>
+                <textarea
+                    name="topic"
+                    id="topic"
+                    class="form-control notes-topic-input"
+                    placeholder="Enter a topic or paste your syllabus here..."
+                    required
+                >{{ topic|default:'' }}</textarea>
+
+                <div class="notes-options">
+
+                    <div>
+                        <label for="language">Notes Language</label>
+                        <select name="language" id="language" class="form-select">
+                            {% for language in languages %}
+                                <option value="{{ language }}"
+                                    {% if selected_language == language %}selected{% endif %}>
+                                    {{ language }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="detail_level">Detail Level</label>
+                        <select name="detail_level" id="detail_level" class="form-select">
+                            {% for level in detail_levels %}
+                                <option value="{{ level }}"
+                                    {% if selected_detail == level %}selected{% endif %}>
+                                    {{ level }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-danger mt-3">{{ error }}</div>
+                {% endif %}
+
+                <button type="submit" class="generate-notes-button">
+                    <i class="bi bi-stars"></i>
+                    Generate Study Notes
+                </button>
+            </form>
+        </div>
+
+        <div class="notes-info-card">
+            <div class="notes-info-icon">
+                <i class="bi bi-lightbulb"></i>
+            </div>
+
+            <h3>Study smarter</h3>
+            <p>Good notes help you understand and revise topics more effectively.</p>
+
+            <div class="notes-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Organised topic sections</span>
+            </div>
+
+            <div class="notes-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Choose your preferred language</span>
+            </div>
+
+            <div class="notes-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Choose your preferred detail level</span>
+            </div>
+
+            <div class="notes-info-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Download notes as a PDF</span>
+            </div>
+
+            <div class="notes-info-bottom">
+                <i class="bi bi-stars"></i>
+                <span>Make every study session count!</span>
+            </div>
+        </div>
+
+    </div>
+
+    {% if notes %}
+        <div class="generated-notes-card" id="generatedNotes">
+
+            <div class="generated-notes-heading">
+                <div>
+                    <span class="notes-tag">YOUR STUDY MATERIAL</span>
+                    <h2>{{ topic }}</h2>
+                    <p>{{ selected_subject }} · {{ selected_language }} · {{ selected_detail }} notes</p>
+                </div>
+
+                <div class="generated-notes-icon">
+                    <i class="bi bi-journal-check"></i>
+                </div>
+            </div>
+
+            {% for section in notes %}
+                <div class="note-section">
+                    <h3>{{ section.heading }}</h3>
+
+                    {% if section.heading == 'Key Points' or section.heading == 'Study Suggestions' %}
+                        <ul>
+                            {% for point in section.content %}
+                                <li>{{ point }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>{{ section.content }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <form method="POST" action="{% url 'notes:download' %}">
+                {% csrf_token %}
+                <input type="hidden" name="topic" value="{{ topic }}">
+                <input type="hidden" name="subject" value="{{ selected_subject }}">
+                <input type="hidden" name="language" value="{{ selected_language }}">
+                <input type="hidden" name="detail_level" value="{{ selected_detail }}">
+
+                <button type="submit" class="download-notes-button">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Download Notes as PDF
+                </button>
+            </form>
+
+            <p class="demo-notice">
+                <i class="bi bi-info-circle"></i>
+                These are demo notes. Gemini AI will be connected later for topic-specific notes.
+            </p>
+
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/notes.js' %}"></script>
+{% endblock %}

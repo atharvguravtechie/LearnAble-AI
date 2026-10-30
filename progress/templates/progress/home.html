@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/progress.css' %}">
+
+<div class="progress-page">
+
+    <!-- Page Heading -->
+    <div class="progress-heading">
+        <div>
+            <h1>My Learning Progress</h1>
+            <p>Track your learning activities and quiz performance.</p>
+        </div>
+
+        <div class="progress-heading-icon">
+            <i class="bi bi-graph-up-arrow"></i>
+        </div>
+    </div>
+
+
+    <!-- Progress Statistics -->
+    <div class="progress-stats">
+
+        <div class="progress-stat-card">
+            <div class="stat-icon purple">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <h3>{{ total_activities|default:0 }}</h3>
+            <p>Total Activities</p>
+        </div>
+
+        <div class="progress-stat-card">
+            <div class="stat-icon green">
+                <i class="bi bi-book"></i>
+            </div>
+            <h3>{{ lesson_count|default:0 }}</h3>
+            <p>Lessons Completed</p>
+        </div>
+
+        <div class="progress-stat-card">
+            <div class="stat-icon orange">
+                <i class="bi bi-patch-question"></i>
+            </div>
+            <h3>{{ quiz_count|default:0 }}</h3>
+            <p>Quizzes Completed</p>
+        </div>
+
+        <div class="progress-stat-card">
+            <div class="stat-icon blue">
+                <i class="bi bi-award"></i>
+            </div>
+            <h3>{{ average_score|default:0 }}%</h3>
+            <p>Average Quiz Score</p>
+        </div>
+
+    </div>
+
+
+    <!-- Main Progress Section -->
+    <div class="progress-main-grid">
+
+        <!-- Quiz Performance -->
+        <div class="progress-panel performance-panel">
+
+            <h2>Quiz Performance</h2>
+            <p>Your overall percentage based on recorded quiz scores.</p>
+
+            <div class="performance-circle"
+                 style="--progress: {{ quiz_percentage|default:0 }}%;">
+
+                <div class="performance-circle-inner">
+                    <strong>{{ quiz_percentage|default:0 }}%</strong>
+                    <span>Overall Score</span>
+                </div>
+
+            </div>
+
+            <div class="performance-legend">
+                <span>
+                    <i class="legend-dot"></i>
+                    Recorded quiz performance
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- Activity Summary -->
+        <div class="progress-panel activity-panel">
+
+            <h2>Activity Summary</h2>
+            <p>Your recorded learning activities.</p>
+
+
+            <!-- Lessons -->
+            <div class="activity-row">
+
+                <div class="activity-label">
+                    <span>
+                        <i class="bi bi-book"></i>
+                        Lessons
+                    </span>
+
+                    <strong>{{ lesson_count|default:0 }}</strong>
+                </div>
+
+                <div class="activity-track">
+                    <progress class="activity-fill lesson-fill" max="{{ total_activities|default:1 }}"
+                            value="{{ lesson_count|default:0 }}" style="width: 100%;"></progress>
+                </div>
+
+            </div>
+
+
+            <!-- Quizzes -->
+            <div class="activity-row">
+
+                <div class="activity-label">
+                    <span>
+                        <i class="bi bi-patch-question"></i>
+                        Quizzes
+                    </span>
+
+                    <strong>{{ quiz_count|default:0 }}</strong>
+                </div>
+
+                <div class="activity-track">
+                    <progress class="activity-fill quiz-fill" max="{{ total_activities|default:1 }}"
+                            value="{{ quiz_count|default:0 }}" style="width: 100%;"></progress>
+                </div>
+
+            </div>
+
+
+            <!-- Notes -->
+            <div class="activity-row">
+
+                <div class="activity-label">
+                    <span>
+                        <i class="bi bi-file-earmark-text"></i>
+                        Notes
+                    </span>
+
+                    <strong>{{ notes_count|default:0 }}</strong>
+                </div>
+
+                <div class="activity-track">
+                    <progress class="activity-fill notes-fill" max="{{ total_activities|default:1 }}"
+                            value="{{ notes_count|default:0 }}" style="width: 100%;"></progress>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recent Activity -->
+    <div class="progress-panel history-panel">
+
+        <div class="history-heading">
+
+            <div>
+                <h2>Recent Activity</h2>
+                <p>Your latest recorded learning activities.</p>
+            </div>
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+
+        {% if records %}
+
+            <div class="activity-table-wrapper">
+
+                <table class="activity-table">
+
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Title</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for record in records %}
+
+                            <tr>
+
+                                <td>
+                                    <span class="activity-type-badge {{ record.activity_type }}">
+                                        {{ record.get_activity_type_display }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {{ record.title|default:"Untitled Activity" }}
+                                </td>
+
+                                <td>
+
+                                    {% if record.total > 0 %}
+
+                                        {{ record.score }}/{{ record.total }}
+                                        ({{ record.percentage }}%)
+
+                                    {% else %}
+
+                                        Completed
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ record.completed_at|date:"d M Y, h:i A" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <!-- Empty State -->
+            <div class="empty-progress">
+
+                <i class="bi bi-journal-plus"></i>
+
+                <h3>No activity recorded yet</h3>
+
+                <p>
+                    Once you complete lessons, quizzes or notes,
+                    your activities will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

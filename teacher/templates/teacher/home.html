@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Teacher | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="teacher-page">
+
+    <!-- Page Heading -->
+    <div class="teacher-page-heading">
+        <div>
+            <span class="teacher-eyebrow">YOUR PERSONAL AI GUIDE</span>
+            <h1>AI Teacher</h1>
+            <p>Learn concepts, ask questions and understand topics at your own pace.</p>
+        </div>
+
+        <div class="teacher-status">
+            <span class="status-dot"></span>
+            Learning Assistant
+        </div>
+    </div>
+
+
+    <!-- Main Teacher Layout -->
+    <div class="teacher-layout">
+
+        <!-- Left: Teacher Profile -->
+        <section class="teacher-profile-card">
+
+            <div class="teacher-profile-top">
+                <span class="teacher-profile-label">MEET YOUR TEACHER</span>
+                <span class="teacher-online-label">
+                    <span class="status-dot"></span>
+                    Ready
+                </span>
+            </div>
+
+            <!-- Animated 2D Avatar -->
+            <div class="teacher-avatar-area">
+
+                <div class="avatar-glow"></div>
+
+                <div class="teacher-avatar" id="teacherAvatar">
+
+                    <div class="avatar-hair"></div>
+
+                    <div class="avatar-face">
+
+                        <div class="avatar-eyebrows">
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <div class="avatar-eyes">
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <div class="avatar-nose"></div>
+                        <div class="avatar-mouth"></div>
+
+                    </div>
+
+                    <div class="avatar-neck"></div>
+
+                    <div class="avatar-body">
+                        <div class="avatar-shirt"></div>
+                    </div>
+
+                </div>
+
+                <div class="avatar-sparkle sparkle-one">✦</div>
+                <div class="avatar-sparkle sparkle-two">✧</div>
+                <div class="avatar-sparkle sparkle-three">✦</div>
+
+            </div>
+
+            <div class="teacher-profile-info">
+                <h2>Alex</h2>
+                <p>Your friendly learning companion</p>
+            </div>
+
+            <div class="teacher-profile-divider"></div>
+
+            <div class="teacher-features">
+
+                <div>
+                    <i class="bi bi-lightbulb-fill"></i>
+                    <span>Simple explanations</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span>Ask any question</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-volume-up-fill"></i>
+                    <span>Listen and learn</span>
+                </div>
+
+            </div>
+
+            <div class="teacher-tip">
+                <i class="bi bi-stars"></i>
+                <div>
+                    <strong>Learning tip</strong>
+                    <p>Ask one question at a time for a clearer explanation.</p>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Right: Chat Interface -->
+        <section class="teacher-chat-card">
+
+            <div class="chat-header">
+
+                <div>
+                    <h2>
+                        <i class="bi bi-chat-square-text-fill"></i>
+                        Learning Conversation
+                    </h2>
+                    <p>Talk to your AI Teacher</p>
+                </div>
+
+                <button type="button" class="chat-clear-button" id="clearChat">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Clear
+                </button>
+
+            </div>
+
+
+            <!-- Language Selection -->
+            <div class="chat-controls">
+
+                <label for="languageSelect">
+                    <i class="bi bi-translate"></i>
+                    Teaching language
+                </label>
+
+                <select id="languageSelect" class="language-select">
+                    {% for language in languages %}
+                        <option value="{{ language.code }}">
+                            {{ language.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages"
+                 aria-live="polite">
+
+                <div class="chat-message teacher-message">
+
+                    <div class="message-avatar">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+
+                    <div class="message-content">
+
+                        <div class="message-name">Alex · AI Teacher</div>
+
+                        <div class="message-bubble">
+                            Hello! I'm Alex, your learning companion.
+
+                            <br><br>
+
+                            What would you like to learn today? You can ask me a question or choose one of the suggestions below.
+
+                        </div>
+
+                        <div class="message-actions">
+                            <button type="button" class="speak-button"
+                                    data-speak="Hello! I'm Alex, your learning companion. What would you like to learn today?">
+                                <i class="bi bi-volume-up"></i>
+                                Listen
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Suggested Questions -->
+            <div class="suggestion-area">
+
+                <p>TRY ASKING</p>
+
+                <div class="suggestion-buttons">
+
+                    <button type="button" class="suggestion-button"
+                            data-question="Explain photosynthesis in simple words.">
+                        Explain photosynthesis
+                    </button>
+
+                    <button type="button" class="suggestion-button"
+                            data-question="What is artificial intelligence?">
+                        What is AI?
+                    </button>
+
+                    <button type="button" class="suggestion-button"
+                            data-question="Explain Newton's laws of motion.">
+                        Newton's laws
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Input Area -->
+            <form class="chat-input-area" id="teacherForm">
+
+                {% csrf_token %}
+
+                <button type="button" class="voice-input-button"
+                        id="voiceInput" title="Speak your question">
+                    <i class="bi bi-mic-fill"></i>
+                </button>
+
+                <input
+                    type="text"
+                    id="questionInput"
+                    placeholder="Ask your teacher anything..."
+                    autocomplete="off"
+                    required
+                >
+
+                <button type="submit" class="send-question-button"
+                        id="sendQuestion">
+                    <i class="bi bi-send-fill"></i>
+                    <span>Send</span>
+                </button>
+
+            </form>
+
+            <div class="chat-footer">
+                <i class="bi bi-info-circle"></i>
+                Frontend demo: connect Gemini API to enable AI-generated answers.
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/teacher.js' %}"></script>
+{% endblock %}

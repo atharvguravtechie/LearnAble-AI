@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/user_settings.css' %}">
+
+<div class="settings-page">
+
+    <div class="settings-heading">
+        <div>
+            <h1>Account Settings</h1>
+            <p>Manage your personal information and learning preferences.</p>
+        </div>
+        <div class="settings-heading-icon">
+            <i class="bi bi-gear"></i>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                 role="alert">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="settings-card">
+
+        <div class="settings-card-heading">
+            <div class="settings-section-icon">
+                <i class="bi bi-person"></i>
+            </div>
+            <div>
+                <h2>Personal Information</h2>
+                <p>Update the details associated with your account.</p>
+            </div>
+        </div>
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="settings-form">
+
+            {% csrf_token %}
+
+            <div class="profile-photo-section">
+
+                <div class="profile-photo-preview">
+                    {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}"
+                             alt="Profile photo">
+                    {% else %}
+                        <i class="bi bi-person"></i>
+                    {% endif %}
+                </div>
+
+                <div class="photo-upload-details">
+                    <h3>Profile Photo</h3>
+                    <p>Choose a photo to personalize your account.</p>
+
+                    <label for="profile_photo" class="photo-upload-button">
+                        <i class="bi bi-upload"></i>
+                        Choose Photo
+                    </label>
+
+                    <input type="file"
+                           name="profile_photo"
+                           id="profile_photo"
+                           accept="image/*"
+                           hidden>
+                    <span id="selectedPhotoName">No new photo selected</span>
+                </div>
+
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <div class="settings-fields-grid">
+
+                <div class="settings-field">
+                    <label for="username">Username</label>
+                    <input type="text"
+                           id="username"
+                           name="username"
+                           value="{{ request.user.username }}"
+                           required>
+                </div>
+
+                <div class="settings-field">
+                    <label for="email">Email Address</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           value="{{ request.user.email }}"
+                           required>
+                </div>
+
+                <div class="settings-field">
+                    <label for="first_name">First Name</label>
+                    <input type="text"
+                           id="first_name"
+                           name="first_name"
+                           value="{{ request.user.first_name }}">
+                </div>
+
+                <div class="settings-field">
+                    <label for="last_name">Last Name</label>
+                    <input type="text"
+                           id="last_name"
+                           name="last_name"
+                           value="{{ request.user.last_name }}">
+                </div>
+
+                <div class="settings-field full-width">
+                    <label for="preferred_language">Preferred Language</label>
+
+                    <select id="preferred_language"
+                            name="preferred_language">
+
+                        <option value="en"
+                            {% if profile.preferred_language == 'en' %}selected{% endif %}>
+                            English
+                        </option>
+
+                        <option value="hi"
+                            {% if profile.preferred_language == 'hi' %}selected{% endif %}>
+                            Hindi
+                        </option>
+
+                        <option value="mr"
+                            {% if profile.preferred_language == 'mr' %}selected{% endif %}>
+                            Marathi
+                        </option>
+
+                    </select>
+
+                    <small>
+                        This saves your language preference. It does not yet
+                        automatically change every page's language.
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="settings-actions">
+                <button type="submit" class="save-settings-button">
+                    <i class="bi bi-check2-circle"></i>
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="settings-card account-info-card">
+        <div class="settings-card-heading">
+            <div class="settings-section-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <div>
+                <h2>Account Information</h2>
+                <p>Basic information about your LearnAble-AI account.</p>
+            </div>
+        </div>
+
+        <div class="account-info-row">
+            <span>Username</span>
+            <strong>{{ request.user.username }}</strong>
+        </div>
+
+        <div class="account-info-row">
+            <span>Account joined</span>
+            <strong>{{ request.user.date_joined|date:"d M Y" }}</strong>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/user_settings.js' %}"></script>
+
+{% endblock %}

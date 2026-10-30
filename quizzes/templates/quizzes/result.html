@@ -1,0 +1,98 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz Results | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quizzes.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="quiz-page">
+
+    <div class="result-card">
+
+        <div class="result-trophy">
+            <i class="bi bi-trophy-fill"></i>
+        </div>
+
+        <span class="quiz-tag">QUIZ COMPLETED</span>
+        <h1>Your Quiz Results</h1>
+
+        <div class="result-score">
+            <strong>{{ score }}</strong>
+            <span>/ {{ total }}</span>
+        </div>
+
+        <div class="result-percentage">{{ percentage }}%</div>
+
+        {% if percentage >= 80 %}
+            <h3>Excellent work!</h3>
+            <p>You have demonstrated a strong understanding of the subject.</p>
+        {% elif percentage >= 50 %}
+            <h3>Good effort!</h3>
+            <p>Keep practising to improve your score.</p>
+        {% else %}
+            <h3>Keep learning!</h3>
+            <p>Review the answers and try again. You can improve!</p>
+        {% endif %}
+
+        <a href="{% url 'quizzes:home' %}" class="try-again-button">
+            <i class="bi bi-arrow-repeat"></i>
+            Try Another Quiz
+        </a>
+
+    </div>
+
+    <div class="review-card">
+        <h2>Answer Review</h2>
+        <p class="review-subtitle">Check your answers and learn from your mistakes.</p>
+
+        {% for item in results %}
+            <div class="review-question">
+
+                <div class="review-question-heading">
+                    <strong>Question {{ forloop.counter }}</strong>
+
+                    {% if item.is_correct %}
+                        <span class="correct-label">
+                            <i class="bi bi-check-circle-fill"></i> Correct
+                        </span>
+                    {% else %}
+                        <span class="incorrect-label">
+                            <i class="bi bi-x-circle-fill"></i> Incorrect
+                        </span>
+                    {% endif %}
+                </div>
+
+                <h3>{{ item.question.question_text }}</h3>
+
+                <p>
+                    Your answer:
+                    {% if item.submitted_answer %}
+                        <strong>{{ item.submitted_answer }}</strong>
+                    {% else %}
+                        <strong>Not answered</strong>
+                    {% endif %}
+                </p>
+
+                <p>
+                    Correct answer:
+                    <strong>{{ item.question.correct_option }}</strong>
+                </p>
+
+                {% if item.question.explanation %}
+                    <div class="review-explanation">
+                        {{ item.question.explanation }}
+                    </div>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

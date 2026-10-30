@@ -1,0 +1,137 @@
+
+
+```html
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ lesson.title }} | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/learning.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="learning-container">
+
+    <!-- Back Navigation -->
+    <a href="{% url 'learning:topics' lesson.topic.subject.id %}"
+       class="learning-back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to {{ lesson.topic.subject.name }}
+    </a>
+
+    <!-- Lesson Header -->
+    <div class="lesson-header">
+
+        <span class="learning-eyebrow">
+            {{ lesson.topic.subject.name }}
+        </span>
+
+        <h1>{{ lesson.title }}</h1>
+
+        <p>
+            Topic: {{ lesson.topic.title }}
+        </p>
+
+    </div>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                 role="alert">
+
+                {{ message }}
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Lesson Content -->
+    <article class="lesson-content-card">
+
+        <div class="lesson-content-heading">
+            <i class="bi bi-book-open"></i>
+            <h2>Lesson Content</h2>
+        </div>
+
+        <div class="lesson-text">
+            {{ lesson.content|linebreaks }}
+        </div>
+
+    </article>
+
+    <!-- Lesson Completion Section -->
+    <div class="lesson-completion-section">
+
+        {% if completed %}
+
+            <div class="lesson-completed-message">
+                <i class="bi bi-check-circle-fill"></i>
+
+                <div>
+                    <h3>Lesson Completed!</h3>
+                    <p>
+                        You have successfully marked this lesson as completed.
+                        Your progress has been updated.
+                    </p>
+                </div>
+            </div>
+
+            <button type="button"
+                    class="btn btn-success"
+                    disabled>
+                <i class="bi bi-check-circle-fill"></i>
+                Completed
+            </button>
+
+        {% else %}
+
+            <div class="lesson-completion-info">
+                <h3>Finished this lesson?</h3>
+                <p>
+                    Mark this lesson as completed to update your
+                    learning progress.
+                </p>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i>
+                    Mark as Completed
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Lesson Footer -->
+    <div class="lesson-footer">
+
+        <a href="{% url 'learning:topics' lesson.topic.subject.id %}"
+           class="learning-back-button">
+
+            <i class="bi bi-arrow-left"></i>
+            Back to Topics
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```
+

@@ -1,0 +1,98 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Take Quiz | LearnAble-AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quizzes.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="quiz-page">
+
+    <div class="taking-quiz-heading">
+        <div>
+            <span class="quiz-tag">YOUR QUIZ</span>
+            <h1>{{ subject }} Quiz</h1>
+            {% if topic %}
+                <p>{{ topic }}</p>
+            {% else %}
+                <p>Test your knowledge across the subject.</p>
+            {% endif %}
+        </div>
+
+        <div class="quiz-progress-count">
+            <strong id="answeredCount">0</strong>
+            <span>/ {{ total }} answered</span>
+        </div>
+    </div>
+
+    <form method="POST" id="quizForm">
+        {% csrf_token %}
+
+        {% for question in questions %}
+            <div class="question-card">
+
+                <div class="question-number">
+                    QUESTION {{ forloop.counter }} OF {{ total }}
+                </div>
+
+                <h3>{{ question.question_text }}</h3>
+
+                <div class="answer-options">
+
+                    <label class="answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="A">
+                        <span class="option-letter">A</span>
+                        <span>{{ question.option_a }}</span>
+                    </label>
+
+                    <label class="answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="B">
+                        <span class="option-letter">B</span>
+                        <span>{{ question.option_b }}</span>
+                    </label>
+
+                    <label class="answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="C">
+                        <span class="option-letter">C</span>
+                        <span>{{ question.option_c }}</span>
+                    </label>
+
+                    <label class="answer-option">
+                        <input type="radio"
+                               name="question_{{ question.id }}"
+                               value="D">
+                        <span class="option-letter">D</span>
+                        <span>{{ question.option_d }}</span>
+                    </label>
+
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="submit-quiz-area">
+            <p>Check your answers before submitting.</p>
+            <button type="submit" class="submit-quiz-button">
+                Submit Quiz
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/quizzes.js' %}"></script>
+{% endblock %}

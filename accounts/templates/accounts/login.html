@@ -1,0 +1,64 @@
+{% extends 'accounts/auth_base.html' %}
+
+{% block title %}Login | LearnAble-AI{% endblock %}
+
+{% block content %}
+
+<h3 class="text-center fw-bold mb-2">Welcome Back!</h3>
+
+<p class="text-center text-muted mb-4">
+    Login to continue learning with LearnAble-AI.
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.username.id_for_label }}">
+            Username
+        </label>
+
+        <input
+            type="text"
+            name="username"
+            id="id_username"
+            class="form-control"
+            placeholder="Enter your username"
+            value="{{ form.username.value|default:'' }}"
+            required
+        >
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.password.id_for_label }}">
+            Password
+        </label>
+
+        <input
+            type="password"
+            name="password"
+            id="id_password"
+            class="form-control"
+            placeholder="Enter your password"
+            required
+        >
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            Invalid username or password.
+        </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary w-100 mt-3">
+        Login
+    </button>
+
+</form>
+
+<div class="auth-footer">
+    Don't have an account?
+    <a href="{% url 'accounts:register' %}">Create Account</a>
+</div>
+
+{% endblock %}
