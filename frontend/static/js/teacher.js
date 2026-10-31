@@ -12,6 +12,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Backend API URL
     const API_URL = "http://127.0.0.1:8001/api/teacher/ask/";
+    // Get Django CSRF token
+function getCSRFToken() {
+    const cookie = document.cookie
+        .split("; ")
+        .find(row => row.startsWith("csrftoken="));
+
+    if (cookie) {
+        return decodeURIComponent(cookie.split("=")[1]);
+    }
+
+    const hiddenToken = document.querySelector(
+        'input[name="csrfmiddlewaretoken"]'
+    );
+
+    return hiddenToken ? hiddenToken.value : "";
+}
 
     // Browser voice recognition
     const SpeechRecognition =
@@ -562,6 +578,34 @@ const lines = normalizedText.split("\n");
             }
 
             addMessage(data.answer, "teacher");
+            // Save the successfully answered question to Progress Tracker
+try {
+    const csrfToken = getCSRFToken();
+
+    const progressResponse = await fetch(
+        "/teacher/record-activity/",
+        {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({
+                question: cleanQuestion
+            })
+        }
+    );
+
+    if (!progressResponse.ok) {
+        console.error(
+            "Could not save AI Teacher activity:",
+            await progressResponse.text()
+        );
+    }
+} catch (progressError) {
+    console.error("Progress recording error:", progressError);
+}
 
         } catch (error) {
 
