@@ -1,5 +1,7 @@
+
 document.addEventListener("DOMContentLoaded", function () {
 
+    // HTML elements
     const form = document.getElementById("teacherForm");
     const questionInput = document.getElementById("questionInput");
     const chatMessages = document.getElementById("chatMessages");
@@ -8,15 +10,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const voiceButton = document.getElementById("voiceInput");
     const sendButton = document.getElementById("sendQuestion");
 
+    // Backend API URL
+    const API_URL = "http://127.0.0.1:8001/api/teacher/ask/";
+
+    // Browser voice recognition
     const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
 
     let recognition = null;
 
+    const backendLanguages = {
+        "en-US": "English",
+        "hi-IN": "Hindi",
+        "mr-IN": "Marathi"
+    };
+
     const languageContent = {
         "en-US": {
             welcome: "Hello! I'm Alex, your learning companion. What would you like to learn today? You can ask me a question or choose one of the suggestions below.",
-            demo: "Thanks for your question! I am currently running in frontend demo mode. Gemini AI will be connected in a later step so I can provide a detailed, personalized explanation.",
             placeholder: "Ask your teacher anything...",
             tryAsking: "TRY ASKING",
             teacherName: "Alex · AI Teacher",
@@ -26,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         "hi-IN": {
             welcome: "नमस्ते! मैं एलेक्स हूँ, आपका सीखने का साथी। आज आप क्या सीखना चाहते हैं? आप मुझसे कोई भी प्रश्न पूछ सकते हैं।",
-            demo: "आपके प्रश्न के लिए धन्यवाद! अभी मैं फ्रंटएंड डेमो मोड में काम कर रहा हूँ। आगे के चरण में Gemini AI जोड़ा जाएगा, जिससे मैं आपको विस्तार से और आपकी आवश्यकता के अनुसार समझा सकूँगा।",
             placeholder: "अपने शिक्षक से कुछ भी पूछें...",
             tryAsking: "यह पूछकर देखें",
             teacherName: "एलेक्स · AI शिक्षक",
@@ -36,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         "mr-IN": {
             welcome: "नमस्कार! मी अॅलेक्स आहे, तुमचा शिकण्याचा साथीदार. आज तुम्हाला काय शिकायचे आहे? तुम्ही मला कोणताही प्रश्न विचारू शकता.",
-            demo: "तुमच्या प्रश्नाबद्दल धन्यवाद! सध्या मी फ्रंटएंड डेमो मोडमध्ये काम करत आहे. पुढील टप्प्यात Gemini AI जोडले जाईल, ज्यामुळे मी तुम्हाला सविस्तर आणि तुमच्या गरजेनुसार समजावून सांगू शकेन.",
             placeholder: "तुमच्या शिक्षकाला काहीही विचारा...",
             tryAsking: "हे प्रश्न विचारून पाहा",
             teacherName: "अॅलेक्स · AI शिक्षक",
@@ -53,21 +62,266 @@ document.addEventListener("DOMContentLoaded", function () {
         return languageContent[getLanguage()] || languageContent["en-US"];
     }
 
+    function getBackendLanguage() {
+        return backendLanguages[getLanguage()] || "English";
+    }
+
     function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    // Safely format inline Markdown
+    function renderInlineMarkdown(text, parent) {
+
+        const pattern =
+            /(\*\*.*?\*\*|__.*?__|`.*?`|\$[^$\n]+\$|\*[^*\n]+\*)/g;
+
+        let lastIndex = 0;
+        let match;
+
+        while ((match = pattern.exec(text)) !== null) {
+
+            if (match.index > lastIndex) {
+                parent.appendChild(
+                    document.createTextNode(
+                        text.slice(lastIndex, match.index)
+                    )
+                );
+            }
+
+            const token = match[0];
+            let element;
+
+            if (
+                token.startsWith("**") ||
+                token.startsWith("__")
+            ) {
+                element = document.createElement("strong");
+                element.textContent = token.slice(2, -2);
+
+            } else if (token.startsWith("`")) {
+                element = document.createElement("code");
+                element.textContent = token.slice(1, -1);
+
+            } else if (token.startsWith("$")) {
+                element = document.createElement("span");
+                element.className = "math-formula";
+                element.textContent = token.slice(1, -1);
+
+            } else {
+                element = document.createElement("em");
+                element.textContent = token.slice(1, -1);
+            }
+
+            parent.appendChild(element);
+            lastIndex = pattern.lastIndex;
+        }
+
+        if (lastIndex < text.length) {
+            parent.appendChild(
+                document.createTextNode(text.slice(lastIndex))
+            );
+        }
+    }
+
+    // Convert Gemini Markdown into properly formatted HTML elements
+    // Uses DOM creation and textContent, not unsafe HTML insertion.
+    function renderMarkdown(text, container) {
+
+        container.innerHTML = "";
+
+        const normalizedText = String(text)
+    .replace(/\r\n?/g, "\n")
+    // Put Markdown headings on separate lines
+    .replace(/\s+(?=#{1,6}\s)/g, "\n")
+    // Separate named sections
+    .replace(
+        /\s+(?=(?:Definition|Explanation|Example|Key Points to Remember|Important Scientific Terms|The Chemical Formula|The Chemical Process)\s*:)/gi,
+        "\n"
+    )
+    // Separate bullet points and numbered steps
+    .replace(/\s+(?=[-*+]\s+)/g, "\n")
+    .replace(/\s+(?=\d+[.)]\s+)/g, "\n");
+
+const lines = normalizedText.split("\n");
+
+        let currentList = null;
+        let currentListType = null;
+
+        function closeList() {
+            currentList = null;
+            currentListType = null;
+        }
+
+        function addFormattedBlock(tag, content, className) {
+
+            const element = document.createElement(tag);
+
+            if (className) {
+                element.className = className;
+            }
+
+            renderInlineMarkdown(content, element);
+            container.appendChild(element);
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+
+            const line = lines[i].trim();
+
+            if (!line) {
+                closeList();
+                continue;
+            }
+
+            // Display block mathematical formulas
+            if (line.startsWith("$$")) {
+
+                closeList();
+
+                let formula = line.replace(/\$\$/g, "");
+
+                while (
+                    !line.endsWith("$$") &&
+                    i + 1 < lines.length
+                ) {
+                    i++;
+                    const nextLine = lines[i];
+
+                    if (nextLine.includes("$$")) {
+                        formula += "\n" +
+                            nextLine.replace(/\$\$/g, "");
+                        break;
+                    }
+
+                    formula += "\n" + nextLine;
+                }
+
+                const formulaBox = document.createElement("div");
+                formulaBox.className = "math-block";
+                formulaBox.textContent = formula.trim();
+
+                container.appendChild(formulaBox);
+                continue;
+            }
+
+            // Headings
+            const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
+
+            if (headingMatch) {
+                closeList();
+
+                const level = headingMatch[1].length;
+                addFormattedBlock(
+                    "h" + (level + 1),
+                    headingMatch[2],
+                    "ai-answer-heading"
+                );
+                continue;
+            }
+
+            // Bold section labels such as Definition:
+            const sectionMatch = line.match(
+                /^(Definition|Explanation|Example|Key Points to Remember|Conclusion|Summary|Important Scientific Terms|The Chemical Formula|The Chemical Process)\s*:\s*(.*)$/i
+            );
+
+            if (sectionMatch) {
+
+                closeList();
+
+                addFormattedBlock(
+                    "h3",
+                    sectionMatch[1],
+                    "ai-answer-heading"
+                );
+
+                if (sectionMatch[2].trim()) {
+                    addFormattedBlock(
+                        "p",
+                        sectionMatch[2],
+                        "ai-answer-paragraph"
+                    );
+                }
+
+                continue;
+            }
+
+            // Unordered lists
+            const unorderedMatch = line.match(/^[-*+]\s+(.+)$/);
+
+            if (unorderedMatch) {
+
+                if (currentListType !== "ul") {
+                    closeList();
+                    currentList = document.createElement("ul");
+                    currentList.className = "ai-answer-list";
+                    currentListType = "ul";
+                    container.appendChild(currentList);
+                }
+
+                const item = document.createElement("li");
+                renderInlineMarkdown(unorderedMatch[1], item);
+                currentList.appendChild(item);
+                continue;
+            }
+
+            // Numbered lists
+            const orderedMatch = line.match(/^\d+[.)]\s+(.+)$/);
+
+            if (orderedMatch) {
+
+                if (currentListType !== "ol") {
+                    closeList();
+                    currentList = document.createElement("ol");
+                    currentList.className = "ai-answer-list";
+                    currentListType = "ol";
+                    container.appendChild(currentList);
+                }
+
+                const item = document.createElement("li");
+                renderInlineMarkdown(orderedMatch[1], item);
+                currentList.appendChild(item);
+                continue;
+            }
+
+            // Blockquotes
+            if (line.startsWith(">")) {
+
+                closeList();
+
+                addFormattedBlock(
+                    "blockquote",
+                    line.replace(/^>\s?/, ""),
+                    "ai-answer-quote"
+                );
+                continue;
+            }
+
+            // Normal paragraphs
+            closeList();
+
+            addFormattedBlock(
+                "p",
+                line,
+                "ai-answer-paragraph"
+            );
+        }
+    }
+
+    // Add a message to the conversation
     function addMessage(text, sender) {
 
         const contentText = getContent();
 
         const message = document.createElement("div");
+
         message.className = sender === "student"
             ? "chat-message student-message"
             : "chat-message teacher-message";
 
         const avatar = document.createElement("div");
         avatar.className = "message-avatar";
+
         avatar.innerHTML = sender === "student"
             ? '<i class="bi bi-person-fill"></i>'
             : '<i class="bi bi-mortarboard-fill"></i>';
@@ -77,13 +331,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const name = document.createElement("div");
         name.className = "message-name";
+
         name.textContent = sender === "student"
             ? contentText.you
             : contentText.teacherName;
 
         const bubble = document.createElement("div");
         bubble.className = "message-bubble";
-        bubble.textContent = text;
+
+        if (sender === "teacher") {
+            renderMarkdown(text, bubble);
+        } else {
+            bubble.textContent = text;
+        }
 
         content.appendChild(name);
         content.appendChild(bubble);
@@ -96,6 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const speakButton = document.createElement("button");
             speakButton.type = "button";
             speakButton.className = "speak-button";
+
             speakButton.innerHTML =
                 `<i class="bi bi-volume-up"></i> ${contentText.listen}`;
 
@@ -114,72 +375,84 @@ document.addEventListener("DOMContentLoaded", function () {
         scrollToBottom();
     }
 
+    // Text-to-speech
     function speakText(text) {
 
-    if (!("speechSynthesis" in window)) {
-        alert("Speech playback is not supported in this browser.");
-        return;
-    }
-
-    window.speechSynthesis.cancel();
-
-    const selectedLanguage = getLanguage();
-    const utterance = new SpeechSynthesisUtterance(text);
-
-    utterance.lang = selectedLanguage;
-    utterance.rate = 0.85;
-    utterance.pitch = 1;
-
-    function findVoice() {
-
-        const voices = window.speechSynthesis.getVoices();
-
-        // Find an exact language match first.
-        let matchingVoice = voices.find(function (voice) {
-            return voice.lang.toLowerCase() ===
-                selectedLanguage.toLowerCase();
-        });
-
-        // Try a regional match, such as mr instead of mr-IN.
-        if (!matchingVoice) {
-            const languageCode = selectedLanguage.split("-")[0].toLowerCase();
-
-            matchingVoice = voices.find(function (voice) {
-                return voice.lang.toLowerCase().startsWith(languageCode);
-            });
-        }
-
-        if (!matchingVoice) {
-
-            if (selectedLanguage === "mr-IN") {
-                alert(
-                    "Marathi speech voice is not available on your computer. " +
-                    "Please install a Marathi text-to-speech voice or use a browser that supports one."
-                );
-                return;
-            }
-
-            alert("A voice for the selected language is not available.");
+        if (!("speechSynthesis" in window)) {
+            alert("Speech playback is not supported in this browser.");
             return;
         }
 
-        utterance.voice = matchingVoice;
-        window.speechSynthesis.speak(utterance);
+        window.speechSynthesis.cancel();
+
+        const selectedLanguage = getLanguage();
+
+        // Remove Markdown symbols before speaking
+        const cleanText = text
+            .replace(/#{1,6}\s/g, "")
+            .replace(/\*\*(.*?)\*\*/g, "$1")
+            .replace(/\*(.*?)\*/g, "$1")
+            .replace(/`(.*?)`/g, "$1")
+            .replace(/\$/g, "")
+            .replace(/^[-*+]\s/gm, "")
+            .replace(/^\d+[.)]\s/gm, "");
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+
+        utterance.lang = selectedLanguage;
+        utterance.rate = 0.85;
+        utterance.pitch = 1;
+
+        function findVoice() {
+
+            const voices = window.speechSynthesis.getVoices();
+
+            let matchingVoice = voices.find(function (voice) {
+                return voice.lang.toLowerCase() ===
+                    selectedLanguage.toLowerCase();
+            });
+
+            if (!matchingVoice) {
+                const languageCode =
+                    selectedLanguage.split("-")[0].toLowerCase();
+
+                matchingVoice = voices.find(function (voice) {
+                    return voice.lang.toLowerCase().startsWith(languageCode);
+                });
+            }
+
+            if (!matchingVoice) {
+
+                if (selectedLanguage === "mr-IN") {
+                    alert(
+                        "Marathi speech voice is not available on your computer. " +
+                        "Please install a Marathi text-to-speech voice or use a browser that supports one."
+                    );
+                    return;
+                }
+
+                alert("A voice for the selected language is not available.");
+                return;
+            }
+
+            utterance.voice = matchingVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        const voices = window.speechSynthesis.getVoices();
+
+        if (voices.length > 0) {
+            findVoice();
+        } else {
+            window.speechSynthesis.addEventListener(
+                "voiceschanged",
+                findVoice,
+                { once: true }
+            );
+        }
     }
 
-    const voices = window.speechSynthesis.getVoices();
-
-    if (voices.length > 0) {
-        findVoice();
-    } else {
-        window.speechSynthesis.addEventListener(
-            "voiceschanged",
-            findVoice,
-            { once: true }
-        );
-    }
-}
-
+    // Update welcome message when language changes
     function updateWelcomeMessage() {
 
         const content = getContent();
@@ -210,6 +483,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const listenButton = document.createElement("button");
         listenButton.type = "button";
         listenButton.className = "speak-button";
+
         listenButton.innerHTML =
             `<i class="bi bi-volume-up"></i> ${content.listen}`;
 
@@ -240,7 +514,8 @@ document.addEventListener("DOMContentLoaded", function () {
         scrollToBottom();
     }
 
-    function sendQuestion(question) {
+    // Send question to Gemini backend
+    async function sendQuestion(question) {
 
         const cleanQuestion = question.trim();
 
@@ -253,16 +528,58 @@ document.addEventListener("DOMContentLoaded", function () {
         questionInput.value = "";
         sendButton.disabled = true;
 
-        window.setTimeout(function () {
+        const originalButtonHTML = sendButton.innerHTML;
 
-            const response = getContent().demo;
+        sendButton.innerHTML =
+            '<i class="bi bi-hourglass-split"></i> Thinking...';
 
-            addMessage(response, "teacher");
+        try {
+
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    question: cleanQuestion,
+                    language: getBackendLanguage()
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || data.detail ||
+                    "Unable to get an answer from the AI Teacher."
+                );
+            }
+
+            if (!data.success || !data.answer) {
+                throw new Error(
+                    data.error || "The AI did not return an answer."
+                );
+            }
+
+            addMessage(data.answer, "teacher");
+
+        } catch (error) {
+
+            console.error("AI Teacher API error:", error);
+
+            addMessage(
+                "Sorry, I could not connect to the AI Teacher. " +
+                error.message +
+                " Please check that your backend server is running on port 8001 and try again.",
+                "teacher"
+            );
+
+        } finally {
 
             sendButton.disabled = false;
+            sendButton.innerHTML = originalButtonHTML;
             questionInput.focus();
-
-        }, 500);
+        }
     }
 
     // Send typed questions
@@ -304,7 +621,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateWelcomeMessage();
     });
 
-    // Voice recognition
+    // Voice input
     if (SpeechRecognition) {
 
         recognition = new SpeechRecognition();
@@ -336,6 +653,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         recognition.onerror = function (event) {
+
             console.log("Voice recognition error:", event.error);
 
             alert(
@@ -357,7 +675,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    // Load the correct welcome message on page opening
+    // Load welcome message
     updateWelcomeMessage();
 
 });

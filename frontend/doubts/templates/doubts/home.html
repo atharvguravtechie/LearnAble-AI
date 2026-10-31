@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -39,6 +40,12 @@
             <form method="POST" id="doubtForm">
                 {% csrf_token %}
 
+                {% if error %}
+                    <div class="alert alert-danger mt-3">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
                 <label for="subject">Select Subject</label>
 
                 <select name="subject" id="subject" class="form-select">
@@ -63,7 +70,11 @@
                 >{{ question }}</textarea>
 
                 <div class="textarea-footer">
-                    <span><i class="bi bi-info-circle"></i> Be as specific as possible.</span>
+                    <span>
+                        <i class="bi bi-info-circle"></i>
+                        Be as specific as possible.
+                    </span>
+
                     <span id="characterCount">0 characters</span>
                 </div>
 
@@ -119,13 +130,15 @@
 
     {% if answer %}
     <div class="answer-card">
+
         <div class="answer-heading">
             <div class="answer-icon">
                 <i class="bi bi-robot"></i>
             </div>
+
             <div>
                 <h3>AI Teacher's Response</h3>
-                <p>{{ selected_subject }} · Demo mode</p>
+                <p>{{ selected_subject }} · AI Generated</p>
             </div>
         </div>
 
@@ -135,14 +148,23 @@
         </div>
 
         <div class="answer-content">
-            <strong><i class="bi bi-stars"></i> Explanation</strong>
-            <p>{{ answer }}</p>
+            <strong>
+                <i class="bi bi-stars"></i>
+                Explanation
+            </strong>
+
+            <div id="doubtAnswer" class="ai-formatted-answer">{{ answer }}</div>
         </div>
 
-        <button type="button" class="ask-another-button" id="askAnotherButton">
+        <button
+            type="button"
+            class="ask-another-button"
+            id="askAnotherButton"
+        >
             <i class="bi bi-plus-circle"></i>
             Ask Another Question
         </button>
+
     </div>
     {% endif %}
 

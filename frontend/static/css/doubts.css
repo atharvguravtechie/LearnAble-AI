@@ -1,319 +1,365 @@
+
+/* =========================================
+   LEARNABLE AI - DOUBT SOLVER
+   Complete Doubt Solver Page Styling
+========================================= */
+
+/* Page Layout */
 .doubts-page {
-    padding: 10px 5px 35px;
+    width: 100%;
+    min-height: 100vh;
+    padding: 30px 20px;
 }
 
-.doubts-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 28px;
+.doubts-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.doubts-tag {
-    color: #6c63ff;
-    font-size: 11px;
+/* Page Header */
+.doubts-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.doubts-header h1 {
+    font-size: 32px;
     font-weight: 800;
-    letter-spacing: 1.5px;
+    margin-bottom: 10px;
 }
 
-.doubts-heading h1 {
-    font-size: 30px;
-    font-weight: 800;
-    color: #20233a;
-    margin: 8px 0;
+.doubts-header p {
+    font-size: 15px;
+    opacity: 0.75;
 }
 
-.doubts-heading p {
-    color: #85889a;
-    margin: 0;
-}
-
-.doubt-heading-icon {
-    width: 65px;
-    height: 65px;
-    border-radius: 20px;
-    background: #eeecff;
-    color: #6c63ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-}
-
-.doubt-layout {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 22px;
-    align-items: stretch;
-}
-
-.doubt-form-card,
-.doubt-tips-card,
-.answer-card {
-    background: #fff;
-    border: 1px solid #ededf4;
+/* Main Doubt Card */
+.doubt-card {
+    width: 100%;
+    padding: 28px;
     border-radius: 18px;
-    padding: 26px;
-    box-shadow: 0 5px 20px rgba(30, 35, 70, 0.04);
-}
-
-.card-heading {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    background: var(--bs-body-bg, #ffffff);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
     margin-bottom: 25px;
 }
 
-.card-icon,
-.answer-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 13px;
-    background: #eeecff;
-    color: #6c63ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 21px;
-}
-
-.card-heading h3,
-.answer-heading h3 {
-    font-size: 17px;
-    font-weight: 750;
-    color: #252841;
-    margin: 0 0 5px;
-}
-
-.card-heading p,
-.answer-heading p {
-    font-size: 13px;
-    color: #9294a3;
-    margin: 0;
-}
-
-.doubt-form-card label {
+/* Form Labels */
+.doubt-card label {
     display: block;
-    font-size: 13px;
     font-weight: 700;
-    color: #34364d;
     margin-bottom: 9px;
 }
 
-.doubt-form-card .form-select {
-    min-height: 46px;
+/* Subject Dropdown */
+.doubt-card select {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 14px;
+    border: 1px solid #ced4da;
     border-radius: 10px;
-    border-color: #e7e7ef;
-    margin-bottom: 22px;
-    font-size: 14px;
+    background: var(--bs-body-bg, #ffffff);
+    color: var(--bs-body-color, #212529);
+    margin-bottom: 20px;
+    outline: none;
 }
 
-.doubt-form-card .form-select:focus,
-.doubt-textarea:focus {
-    border-color: #8179ff;
-    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.10);
+.doubt-card select:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.13);
 }
 
-.question-label {
-    margin-top: 2px;
-}
-
-.doubt-textarea {
-    min-height: 155px;
+/* Question Textarea */
+.doubt-card textarea {
+    width: 100%;
+    min-height: 150px;
     resize: vertical;
-    border-radius: 10px;
-    border-color: #e7e7ef;
     padding: 14px;
-    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    background: var(--bs-body-bg, #ffffff);
+    color: var(--bs-body-color, #212529);
+    font-size: 15px;
     line-height: 1.6;
+    outline: none;
 }
 
-.textarea-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    color: #999baa;
-    font-size: 11px;
-    margin-top: 9px;
+.doubt-card textarea:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.13);
 }
 
+/* Character Count */
+.character-counter {
+    text-align: right;
+    font-size: 13px;
+    opacity: 0.65;
+    margin-top: 7px;
+}
+
+/* Form Buttons */
 .doubt-actions {
     display: flex;
-    justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 12px;
-    margin-top: 23px;
+    margin-top: 20px;
 }
 
-.clear-button,
-.ask-button,
-.ask-another-button {
-    border: 0;
-    border-radius: 10px;
-    padding: 11px 17px;
-    font-size: 13px;
-    font-weight: 700;
+.doubt-actions button {
+    min-height: 45px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 9px;
+    font-weight: 600;
     cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.clear-button {
-    background: #f3f3f8;
-    color: #62647a;
+.doubt-actions button:hover {
+    transform: translateY(-2px);
 }
 
-.ask-button,
-.ask-another-button {
+/* Submit Button */
+#doubtForm button[type="submit"] {
     background: #6c63ff;
-    color: #fff;
+    color: #ffffff;
 }
 
-.ask-button:hover,
-.ask-another-button:hover {
-    background: #554be8;
+#doubtForm button[type="submit"]:hover {
+    background: #554bd8;
 }
 
-.clear-button:hover {
-    background: #e8e8f0;
+/* Clear Button */
+#clearButton {
+    background: #e9ecef;
+    color: #333333;
 }
 
-.doubt-tips-card {
-    background: linear-gradient(145deg, #f4f2ff, #fff);
+/* Answer Card */
+.answer-card {
+    width: 100%;
+    padding: 26px;
+    margin-top: 25px;
+    border-radius: 18px;
+    background: var(--bs-body-bg, #ffffff);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 }
 
-.tips-icon {
-    width: 48px;
-    height: 48px;
-    background: #e6e2ff;
-    color: #6c63ff;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 23px;
+/* Answer Header */
+.answer-header {
+    padding-bottom: 16px;
     margin-bottom: 18px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
 }
 
-.doubt-tips-card h3 {
-    font-size: 18px;
+.answer-header h3 {
+    font-size: 21px;
     font-weight: 800;
-    color: #292b45;
+    margin: 0;
 }
 
-.doubt-tips-card > p {
-    font-size: 13px;
-    line-height: 1.6;
-    color: #85879b;
-    margin-bottom: 23px;
-}
-
-.tip-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin: 16px 0;
-    font-size: 13px;
-    color: #51536b;
-}
-
-.tip-item i {
+.answer-header i {
     color: #6c63ff;
+    margin-right: 7px;
+}
+
+/* Answer Content */
+.answer-content {
+    width: 100%;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.answer-content > strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* =========================================
+   AI ANSWER FORMATTING
+========================================= */
+
+.ai-formatted-answer {
+    width: 100%;
+    font-size: 15px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+/* Main section headings */
+.doubt-answer-section {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.45;
+    margin: 25px 0 12px;
+    color: #6c63ff;
+}
+
+/* Subheadings */
+.doubt-answer-heading {
+    font-size: 17px;
+    font-weight: 750;
+    line-height: 1.5;
+    margin: 20px 0 10px;
+    color: var(--bs-body-color, #212529);
+}
+
+/* Paragraphs */
+.doubt-answer-paragraph {
+    font-size: 15px;
+    line-height: 1.85;
+    margin: 8px 0 15px;
+    color: var(--bs-body-color, #212529);
+}
+
+/* Bullet and numbered lists */
+.doubt-answer-list {
+    padding-left: 28px;
+    margin: 12px 0 20px;
+}
+
+.doubt-answer-list li {
+    padding-left: 5px;
+    margin-bottom: 11px;
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+.doubt-answer-list li::marker {
+    color: #6c63ff;
+    font-weight: 700;
+}
+
+/* Bold text */
+.ai-formatted-answer strong {
+    font-weight: 800;
+}
+
+/* Italic text */
+.ai-formatted-answer em {
+    font-style: italic;
+}
+
+/* Inline code */
+.ai-formatted-answer code {
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: rgba(108, 99, 255, 0.1);
+    font-family: Consolas, monospace;
+    font-size: 0.92em;
+}
+
+/* Inline mathematical formulas */
+.ai-formatted-answer .math-formula {
+    display: inline-block;
+    padding: 2px 7px;
+    margin: 2px;
+    border-radius: 5px;
+    background: rgba(108, 99, 255, 0.1);
+    font-family: "Times New Roman", serif;
     font-size: 16px;
 }
 
-.tips-bottom {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    background: #fff;
-    border-radius: 12px;
-    padding: 13px;
-    margin-top: 25px;
-    color: #69618f;
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-.tips-bottom i {
-    color: #f0a82d;
-    font-size: 17px;
-}
-
-.answer-card {
-    margin-top: 25px;
-}
-
-.answer-heading {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    margin-bottom: 22px;
-}
-
-.submitted-question {
-    background: #f6f5ff;
-    border-radius: 12px;
+/* Block mathematical formulas */
+.ai-formatted-answer .math-block {
+    display: block;
+    width: 100%;
     padding: 16px;
-    margin-bottom: 16px;
+    margin: 16px 0;
+    border-radius: 10px;
+    background: rgba(108, 99, 255, 0.08);
+    text-align: center;
+    font-family: "Times New Roman", serif;
+    font-size: 19px;
+    overflow-x: auto;
 }
 
-.submitted-question strong,
-.answer-content strong {
-    font-size: 13px;
-    color: #45465e;
+/* Ask Another Button */
+#askAnotherButton {
+    margin-top: 22px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 9px;
+    background: #6c63ff;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.submitted-question p,
-.answer-content p {
-    color: #65677c;
-    font-size: 14px;
-    line-height: 1.7;
-    margin: 8px 0 0;
-    white-space: pre-wrap;
+#askAnotherButton:hover {
+    background: #554bd8;
+    transform: translateY(-2px);
 }
 
-.answer-content {
-    padding: 5px 3px 18px;
+/* Error Message */
+.error-message {
+    padding: 13px 16px;
+    margin: 15px 0;
+    border-radius: 9px;
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
 }
 
-.answer-content strong i {
-    color: #6c63ff;
-}
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
 
-.ask-another-button {
-    margin-top: 10px;
-}
-
-@media (max-width: 850px) {
-    .doubt-layout {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 576px) {
-    .doubts-heading h1 {
-        font-size: 24px;
-    }
-
-    .doubt-heading-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 23px;
+@media (max-width: 768px) {
+    .doubts-page {
+        padding: 20px 12px;
     }
 
-    .doubt-form-card,
-    .doubt-tips-card,
+    .doubts-header h1 {
+        font-size: 26px;
+    }
+
+    .doubt-card,
     .answer-card {
         padding: 19px;
+        border-radius: 14px;
+    }
+
+    .answer-header h3 {
+        font-size: 19px;
+    }
+
+    .doubt-answer-section {
+        font-size: 18px;
+    }
+
+    .doubt-answer-heading {
+        font-size: 16px;
     }
 
     .doubt-actions {
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     .doubt-actions button {
         width: 100%;
     }
+}
 
-    .textarea-footer {
-        flex-direction: column;
+@media (max-width: 480px) {
+    .doubts-header h1 {
+        font-size: 23px;
+    }
+
+    .doubt-card,
+    .answer-card {
+        padding: 15px;
+    }
+
+    .ai-formatted-answer {
+        font-size: 14px;
+    }
+
+    .doubt-answer-list {
+        padding-left: 22px;
     }
 }
